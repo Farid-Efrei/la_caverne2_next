@@ -36,6 +36,14 @@ export default function ApiCharacters() {
   useEffect(() => {
     fetchApiCharacters();
   }, []);
+
+  function deleteApiCharacter(id) {
+    const updatedCharacters = ApiCharacters.filter(
+      (character) => character.id !== id
+    );
+    setApiCharacters(updatedCharacters);
+  }
+
   return (
     <div>
       <Title>Les Personnages de l'API :</Title>
@@ -45,7 +53,11 @@ export default function ApiCharacters() {
 
       <div className="flex flex-wrap justify-center gap-8">
         {ApiCharacters.map((oneCharacter) => (
-          <Card key={oneCharacter.id} character={oneCharacter} />
+          <Card
+            key={oneCharacter.id}
+            character={oneCharacter}
+            deleteCharacter={deleteApiCharacter}
+          />
         ))}
       </div>
     </div>
