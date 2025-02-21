@@ -2,6 +2,7 @@
 
 import Loading from "@/app/loading";
 import Title from "@/components/title/Title";
+import { fetchApiImg } from "@/utils/fetchApiImg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -10,27 +11,37 @@ export default function Api_Images() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  async function fetchApiImg() {
-    try {
-      const response = await fetch(
-        "https://la-taverne.ducompagnon.fr/api/images"
-      );
-      if (!response.ok) {
-        throw new Error("Erreur lors de la récupération des images !");
-      }
-      const data = await response.json();
-      console.log(data);
-      setImages(data);
-    } catch (error) {
-      console.error("Error fetching images :", error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  // async function fetchApiImg() {
+  //   try {
+  //     const response = await fetch(
+  //       "https://la-taverne.ducompagnon.fr/api/images"
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error("Erreur lors de la récupération des images !");
+  //     }
+  //     const data = await response.json();
+  //     console.log(data);
+  //     setImages(data);
+  //   } catch (error) {
+  //     console.error("Error fetching images :", error);
+  //     setError(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
   useEffect(() => {
-    fetchApiImg();
+    async function loadImg() {
+      try {
+        const data = await fetchApiImg();
+        setImages(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadImg();
   }, []);
 
   return (
@@ -39,7 +50,7 @@ export default function Api_Images() {
       {/* Loader si chargement en cours */}
       {loading && <Loading />}
       {/* {si erreur} */}
-      {error && <p className="text-red-500 text-center">{error}</p>}
+      {error && <p className="text-red-500 text-center text-xl">{error}</p>}
 
       <div className="flex items-center justify-center flex-wrap gap-4">
         {images.map((image, index) => (
